@@ -1,6 +1,7 @@
 package com.wymee.backparser.parser_backend_api.data;
 
 import com.wymee.backparser.parser_backend_api.model.Job;
+import com.wymee.backparser.parser_backend_api.repository.JobRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.function.Function;
 
 @Service
 public class JobsDAO implements JpaRepository<Job, Long> {
+
     @Override
     public List<Job> findAll() {
         return null;

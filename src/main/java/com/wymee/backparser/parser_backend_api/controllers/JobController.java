@@ -1,15 +1,21 @@
 package com.wymee.backparser.parser_backend_api.controllers;
 
+import com.wymee.backparser.parser_backend_api.classes.JobObject;
+import com.wymee.backparser.parser_backend_api.classes.Utilitaires;
 import com.wymee.backparser.parser_backend_api.model.Job;
 import com.wymee.backparser.parser_backend_api.repository.JobRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:8090")
 @RestController
 @RequestMapping("/api/job")
 public class JobController {
@@ -33,9 +39,28 @@ public class JobController {
         }
     }
 
+
     @PostMapping
     public Job saveJob(@Validated @RequestBody Job job) {
         return jobRepository.save(job);
+    }
+
+    @PostMapping("/addAll")
+    public String saveAll(@RequestParam(name = "data") String list){
+
+        JSONArray array = new JSONArray(list);
+
+        for (int i = 0; i <array.length() ; i++) {
+            JSONObject obj = (JSONObject) array.get(i);
+            if (!obj.isEmpty()){
+                jobRepository.save(Utilitaires.jobifyJson(obj));
+            }
+        }
+        return "Jobs saved successfully";
+    }
+
+    public Job saveMyJob(Job object){
+        return jobRepository.save(object);
     }
 
 }

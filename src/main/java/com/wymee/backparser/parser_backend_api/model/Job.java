@@ -1,10 +1,22 @@
 package com.wymee.backparser.parser_backend_api.model;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.mapping.Filterable;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "jobs")
-public class Job {
+public class Job implements Serializable, Filterable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,6 +42,12 @@ public class Job {
     @Column(name = "beginDate")
     private String beginDate;
 
+    private String jobPostedAt;
+
+    private String jobContrat;
+
+    private String jobSource;
+
     public Job() {
     }
 
@@ -42,6 +60,34 @@ public class Job {
         this.location = location;
         this.salaryRange = salaryRange;
         this.beginDate = beginDate;
+    }
+
+    public Job(Long id, String title, String description, String company, String companyWebSite, String location, String salaryRange, String beginDate) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.company = company;
+        this.companyWebSite = companyWebSite;
+        this.location = location;
+        this.salaryRange = salaryRange;
+        this.beginDate = beginDate;
+    }
+
+    public Job(/*Long id,*/ String title, String description, String company, String companyWebSite, String location, String salaryRange, String beginDate, String jobPostedAt, String jobContrat, String jobSource) {
+        //this.id = id;
+        this.title = title;
+        this.description = description;
+        this.company = company;
+        this.companyWebSite = companyWebSite;
+        this.location = location;
+        this.salaryRange = salaryRange;
+        this.beginDate = beginDate;
+        this.jobPostedAt = jobPostedAt;
+        this.jobContrat = jobContrat;
+        this.jobSource = jobSource;
+    }
+
+    public Job(String jobTitle, String jobDescription, String companyName, String companyLink, String companyLocation, String s, String s1, String jobPostedAt, String indeed) {
     }
 
     public Long getId() {
@@ -100,6 +146,38 @@ public class Job {
         this.beginDate = beginDate;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getJobPostedAt() {
+        return jobPostedAt;
+    }
+
+    public void setJobPostedAt(String jobPostedAt) {
+        this.jobPostedAt = jobPostedAt;
+    }
+
+    public String getJobContrat() {
+        return jobContrat;
+    }
+
+    public void setJobContrat(String jobContrat) {
+        this.jobContrat = jobContrat;
+    }
+
+    public String getJobSource() {
+        return jobSource;
+    }
+
+    public void setJobSource(String jobSource) {
+        this.jobSource = jobSource;
+    }
+
     @Override
     public String toString() {
         return  "id=" + id +
@@ -110,5 +188,29 @@ public class Job {
                 ", location='" + location + '\'' +
                 ", salaryRange='" + salaryRange + '\'' +
                 ", beginDate='" + beginDate + '\'' ;
+    }
+
+
+    public boolean isEmpty(){
+        Boolean response = false;
+
+        if(this.title.isEmpty() && this.description.isEmpty() && this.company.isEmpty()
+                && this.companyWebSite.isEmpty() && this.location.isEmpty() && this.salaryRange.isEmpty()
+                    && this.beginDate.isEmpty() && this.jobContrat.isEmpty() && this.jobPostedAt.isEmpty()
+                        && this.jobSource.isEmpty()){
+            response = true;
+        }
+
+        return response;
+    }
+
+    @Override
+    public void addFilter(String s, String s1, boolean b, Map<String, String> map, Map<String, String> map1) {
+
+    }
+
+    @Override
+    public List getFilters() {
+        return null;
     }
 }

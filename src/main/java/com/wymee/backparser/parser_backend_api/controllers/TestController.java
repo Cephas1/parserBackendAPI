@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+@CrossOrigin(origins = "http://localhost:8090")
 @RestController
 @RequestMapping("/api")
 public class TestController {
@@ -72,17 +73,16 @@ public class TestController {
                    new File(realPathToUploads).mkdir();
                    //System.out.println("On est passé là !");
                } /*else {
-                   return "File path already exists";
+                   System.out.println("Répertoire d\'enregistrement déjà existant");
                }*/
 
-               System.out.println("realPathToUploads = " + realPathToUploads);
+               //System.out.println("realPathToUploads = " + realPathToUploads);
 
                String orgName = file.getOriginalFilename();
                String filePath = realPathToUploads + orgName;
                File dest = new File(filePath);
+
                file.transferTo(dest);
-
-
        }else {
            return "No file received!";
        }
