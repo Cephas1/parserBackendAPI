@@ -10,6 +10,7 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,10 +92,12 @@ public class ScrappingController {
     }*/
 
     public static ArrayList<Job> doScrapping(String job, String location) throws IOException {
+
         final String urlIndeed = "https://www.indeed.com/jobs?q="+job+"&l="+location;
         final String urlLinkup = "https://www.linkup.com/search/results/"+ job +"-jobs-in-"+ location;
         final String urlPoleEmploi = "https://candidat.pole-emploi.fr/offres/recherche?" + "motsCles="+ job +
                                      "&offresPartenaires=true&range=0-19&rayon=10&tri=0";
+        final String urlLinkedIn = "https://www.linkedin.com/jobs/search/?keywords="+ job +"&location="+ location;
 
         try{
             scrappIndeed(urlIndeed);
@@ -223,6 +226,42 @@ public class ScrappingController {
 
         }catch (HttpStatusException ex){
             System.out.println("Erreur "+ ex.getStatusCode() +" Probleme de connexion à Indeed dûe à : "+ex.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void scrappLinkedIn(String url){
+        try{
+            Document document = Jsoup.connect(url.replace(" ", "%20")).get();
+
+            if(document != null){
+                 Elements element = document.select("div.job-search-results.display-flex.flex-column");
+
+                    for(Element current : element.select("ul.jobs-search-results__list.list-style-none")) {
+
+                            String jobTitle = current.select("a.disabled.ember-view.job-card-container__link.job-card-list__title").text();
+                            String companyName = current.select("a.job-card-container__link.job-card-container__company-name.ember-view").text();
+                            String jobLocation = " ";
+                            String jobPostedAt = current.select("ul.job-card-list__footer-wrapper.job-card-container__footer-wrapper.flex-shrink-zero.display-flex.t-sans.t-12.t-black--light.t-normal.t-roman li.job-card-container__listed-time.job-card-container__footer-item").text();
+                            String jobDescription = current.select("div.media-body p.description").text();
+                            String jobContrat = current.select("div.media-body p.contrat").text();
+
+                            Job taff = new Job(jobTitle, jobDescription, companyName, " ",
+                                    jobLocation, " ", " ", jobPostedAt, jobContrat, "Pole Emploi");
+
+                            jobsList.add(taff);
+
+                            listOfJobs.append("job", Utilitaires.jSONifyJob(taff));
+
+                    }
+
+            }else {
+                System.out.println("No data got from "+ url);
+            }
+
+        }catch (HttpStatusException ex){
+            System.out.println("Erreur "+ ex.getStatusCode() +" Probleme de connexion à LinkedIn dûe à : "+ex.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }

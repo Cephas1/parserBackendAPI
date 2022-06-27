@@ -68,7 +68,7 @@ public class TestController {
 
                //String uploadsDir = "/webResources/uploads/";
                //String realPathToUploads = request.getServletContext().getRealPath(uploadsDir);
-                String realPathToUploads = "C:\\Users\\Admin KBIM\\Documents\\SpringBootProjects\\parser_backend_api\\src\\webResources\\uploads\\";
+                String realPathToUploads = "C:\\Users\\Admin KBIM\\Documents\\SpringBootProjects\\parser_backend_api\\src\\webResources\\resumes\\";
                if (!new File(realPathToUploads).exists()) {
                    new File(realPathToUploads).mkdir();
                    //System.out.println("On est passé là !");

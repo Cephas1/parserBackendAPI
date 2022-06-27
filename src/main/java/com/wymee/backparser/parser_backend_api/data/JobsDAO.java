@@ -2,6 +2,7 @@ package com.wymee.backparser.parser_backend_api.data;
 
 import com.wymee.backparser.parser_backend_api.model.Job;
 import com.wymee.backparser.parser_backend_api.repository.JobRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,13 +10,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 @Service
+@Transactional
 public class JobsDAO implements JpaRepository<Job, Long> {
+
+    @Autowired
+    private JobRepository repository;
+
+    public List<Job> findAllByReff(String reff) {
+        return repository.findAllByReff(reff);
+    }
 
     @Override
     public List<Job> findAll() {

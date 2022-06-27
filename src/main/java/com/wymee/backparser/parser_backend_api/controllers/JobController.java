@@ -7,6 +7,7 @@ import com.wymee.backparser.parser_backend_api.repository.JobRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class JobController {
 
     @Autowired
     private JobRepository jobRepository;
+
+    @GetMapping("/filtered")
+    public ResponseEntity<List<Job>> getByReff(@RequestParam(name = "tosearch") String name){
+        return new ResponseEntity<>(jobRepository.findAllByReff(name), HttpStatus.OK);
+    }
 
     @GetMapping
     public List<Job> findAllJobs() {
