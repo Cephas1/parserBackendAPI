@@ -1,6 +1,7 @@
 package com.wymee.backparser.parser_backend_api.classes;
 
 import com.wymee.backparser.parser_backend_api.model.Job;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 public class Utilitaires {
 
-    public static JSONObject makeMeta(String state) {
+    public static JSONObject makeMeta(String state) throws JSONException {
 
         //JSONObject metaHeader = new JSONObject();
         JSONObject meta = new JSONObject();
@@ -21,7 +22,7 @@ public class Utilitaires {
     }
 
 
-    public static JSONObject makeMeta(String state, String message) {
+    public static JSONObject makeMeta(String state, String message) throws JSONException {
 
         //JSONObject metaHeader = new JSONObject();
         JSONObject meta = new JSONObject();
@@ -33,7 +34,7 @@ public class Utilitaires {
         return meta.append("meta", meta);
     }
 
-    public static Object jSONifyJob(Job job) {
+    public static Object jSONifyJob(Job job) throws JSONException{
         JSONObject currentObject = new JSONObject();
 
         currentObject.put("job-title", job.getTitle());
@@ -60,7 +61,7 @@ public class Utilitaires {
         };
     }
 
-    public static Job jobifyJson(JSONObject obj) {
+    public static Job jobifyJson(JSONObject obj) throws JSONException{
         Job job = new Job();
 
         job.setTitle(obj.getString("title"));

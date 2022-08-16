@@ -5,6 +5,7 @@ import com.wymee.backparser.parser_backend_api.classes.Utilitaires;
 import com.wymee.backparser.parser_backend_api.model.Job;
 import com.wymee.backparser.parser_backend_api.repository.JobRepository;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -32,22 +33,24 @@ public class ScrappingController {
 
     @GetMapping("/scrapp")
     //@EventListener(ApplicationReadyEvent.class)
-    public static String scrapping(@RequestParam(name = "data") String data) throws IOException {
+    public static String scrapping(@RequestParam(name = "data") String data) throws IOException, JSONException {
 
         JSONObject response = new JSONObject();
         JSONArray allData = new JSONArray(data);
 
+      try {
+          //if (!allData.isEmpty()) {
+              for (int i = 0; i < allData.length(); i++) {
 
-        if(!allData.isEmpty()) {
-            for (int i = 0; i < allData.length(); i++) {
-
-                JSONObject obj = (JSONObject) allData.get(i);
-                doScrapping(obj.getString("job"), obj.getString("location"));
-            }
-        }else{
-            response.append("meta", Utilitaires.makeMeta("Error", "Bad credential, no data submitted"));
-        }
-
+                  JSONObject obj = (JSONObject) allData.get(i);
+                  doScrapping(obj.getString("job"), obj.getString("location"));
+              }
+          //} else {
+              //response.append("meta", Utilitaires.makeMeta("Error", "Bad credential, no data submitted"));
+          //}
+      }catch (org.json.JSONException e){
+          e.printStackTrace();
+      }
         System.out.println("Jobs ==> " + jobsList.toString());
 
         return new Gson().toJson(jobsList);  //response.toString();
@@ -115,14 +118,16 @@ public class ScrappingController {
                     }
                 }
             }
-        }catch (UnknownHostException ex){
+        }catch (UnknownHostException ex ){
             System.out.println("Impossible de joindre l'hôte : " + ex.getMessage() + ". Vérifiez votre connexion.");
+        }catch (org.json.JSONException jsonException){
+            jsonException.printStackTrace();
         }
 
         return jobsList;
     }
 
-    public static void scrappIndeed(String url){
+    public static void scrappIndeed(String url) throws JSONException{
         //Document document = null;
         int i = 0;
         try {
@@ -159,7 +164,7 @@ public class ScrappingController {
 
     }
 
-    public static void scrappLinkup(String url) throws IOException {
+    public static void scrappLinkup(String url) throws IOException, org.json.JSONException {
         //Document document2 = null;
 
         try{
@@ -192,7 +197,7 @@ public class ScrappingController {
         }
     }
 
-    public static void scrappPoleEmploi(String url){
+    public static void scrappPoleEmploi(String url) throws JSONException{
         //Document document3 = null;
         try{
             Document document3 = Jsoup.connect(url.replace(" ", "+")).get();
@@ -231,7 +236,7 @@ public class ScrappingController {
         }
     }
 
-    public static void scrappLinkedIn(String url){
+    public static void scrappLinkedIn(String url) throws JSONException{
         try{
             Document document = Jsoup.connect(url.replace(" ", "%20")).get();
 

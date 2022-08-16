@@ -28,14 +28,17 @@ public class MatchingController {
     private static JobRepository jobRepository;
 
     @GetMapping("/match")
-    public static String match(@RequestParam(name = "data") String data) throws IOException, JSONException {
+    public static String match(@RequestParam(name = "data") String data) throws IOException, org.json.JSONException {
 
         String scrapped = "";
 
         if(!data.isEmpty()) {
 
-            scrapped =  ScrappingController.scrapping(data);
-
+            try {
+                scrapped = ScrappingController.scrapping(data);
+            }catch (org.json.JSONException e){
+                e.printStackTrace();
+            }
 //            scrapped = ScrappingController.scrapping(data);
 
             if (scrapped.isEmpty() || scrapped.length() <= 7) {
@@ -62,9 +65,12 @@ public class MatchingController {
             for (int i = 0; i < value.size() ; i++) {
                 if(value.get(i).getTitle().contains(array.getJSONObject(j).getString("job"))
                         || value.get(i).getDescription().contains(array.getJSONObject(j).getString("job"))){
-
-                    retour.append(String.valueOf(iterator), JSONifyJob(value.get(i)));
-                    iterator++;
+                    try {
+                        retour.append(String.valueOf(iterator), JSONifyJob(value.get(i)));
+                        iterator++;
+                    }catch (org.json.JSONException e){
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -72,7 +78,7 @@ public class MatchingController {
         return retour;
     }
 
-    private static Object JSONifyJob(Job job) {
+    private static Object JSONifyJob(Job job) throws org.json.JSONException {
         JSONObject currentObject = new JSONObject();
 
         currentObject.put("job-title", job.getTitle());
@@ -89,7 +95,7 @@ public class MatchingController {
         return currentObject;
     }
 
-    public static String matches(String candidat){
+    public static String matches(String candidat) throws org.json.JSONException{
         JSONObject candidate = new JSONObject(candidat);
 
         // TODO getting SQLData and matching it to return it has a json Object to String!

@@ -77,52 +77,21 @@ public class ParsingController {
         }
     }
 
-    private static String getCandidateLocationFromParsingData(JSONObject parsingResults) {
+    /*private static String getCandidateLocationFromParsingData(JSONObject parsingResults) {
         return parsingResults.getJSONObject("location").getString("country");
-    }
+    }*/
 
-    private static String getCandidateProfessionFromParsingData(JSONObject parsingResults) {
+    /*private static String getCandidateProfessionFromParsingData(JSONObject parsingResults) {
         return parsingResults.getString("profession");
-    }
+    }*/
 
-    private static String getCandidateNameFromParsingData(JSONObject parsingResults) {
+    /*private static String getCandidateNameFromParsingData(JSONObject parsingResults) {
         return parsingResults.getJSONObject("name").getString("raw").replace(" ", "_");
-    }
+    }*/
 
     private static String getMatchingData(String profession, String location) throws IOException {
 
         return ScrappingController.doScrapping(profession.replace(" ", "%2C%20"), location).toString();
-    }
-
-    public static JSONObject getParsingData(String url) throws IOException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        try{
-            HttpGet request = new HttpGet(url);
-
-            request.addHeader("content-type", "application/json");
-            request.addHeader("Content-Type", "multipart/form-data");
-
-
-            CloseableHttpResponse response = httpClient.execute(request);
-
-            try{
-                /*System.out.println("\n response.getProtocolVersion() = " + response.getProtocolVersion());
-                System.out.println("\n response.getStatusLine().getStatusCode() = " + response.getStatusLine().getStatusCode());
-                System.out.println("\n response.getStatusLine().getReasonPhrase() = " + response.getStatusLine().getReasonPhrase());
-                System.out.println("\n response.getStatusLine().toString() = " + response.getStatusLine().toString());*/
-
-                HttpEntity entity = response.getEntity();
-                if (entity != null){
-                    return new JSONObject(EntityUtils.toString(entity));
-                    //System.out.println(" content "+EntityUtils.toString(entity));
-                }
-            }finally {
-                response.close();
-            }
-        }finally {
-            httpClient.close();
-        }
-        return null;
     }
 
     public static String getParsingData(String url, MultipartFile file) throws IOException, InterruptedException {

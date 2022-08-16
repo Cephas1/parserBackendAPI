@@ -1,5 +1,6 @@
 package com.wymee.backparser.parser_backend_api.controllers;
 
+import com.sun.istack.NotNull;
 import com.wymee.backparser.parser_backend_api.classes.JobObject;
 import com.wymee.backparser.parser_backend_api.classes.Utilitaires;
 import com.wymee.backparser.parser_backend_api.model.Job;
@@ -52,15 +53,14 @@ public class JobController {
     }
 
     @PostMapping("/addAll")
-    public String saveAll(@RequestParam(name = "data") String list){
+    public String saveAll(@RequestParam(name = "data") @NotNull String list) throws org.json.JSONException{
 
         JSONArray array = new JSONArray(list);
 
         for (int i = 0; i <array.length() ; i++) {
             JSONObject obj = (JSONObject) array.get(i);
-            if (!obj.isEmpty()){
-                jobRepository.save(Utilitaires.jobifyJson(obj));
-            }
+            jobRepository.save(Utilitaires.jobifyJson(obj));
+
         }
         return "Jobs saved successfully";
     }

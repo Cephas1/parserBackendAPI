@@ -2,6 +2,7 @@ package com.wymee.backparser.parser_backend_api.controllers;
 
 import com.wymee.backparser.parser_backend_api.data.JobsDAO;
 import com.wymee.backparser.parser_backend_api.model.Job;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class TestController {
     //private HttpServletRequest request;
 
     @GetMapping("/test/json")
-    public static String testing(){
+    public static String testing() throws JSONException {
         JSONObject object = new JSONObject();
         object.put("name", "Pierre");
         object.put("name1", "Dan");
