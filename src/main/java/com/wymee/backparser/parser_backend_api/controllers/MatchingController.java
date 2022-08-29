@@ -16,7 +16,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin

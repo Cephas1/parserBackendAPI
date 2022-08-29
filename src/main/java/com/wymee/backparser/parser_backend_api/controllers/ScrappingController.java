@@ -38,13 +38,18 @@ public class ScrappingController {
         JSONObject response = new JSONObject();
         JSONArray allData = new JSONArray(data);
 
+        StringBuilder jobs = new StringBuilder();
       try {
           //if (!allData.isEmpty()) {
               for (int i = 0; i < allData.length(); i++) {
 
                   JSONObject obj = (JSONObject) allData.get(i);
-                  doScrapping(obj.getString("job"), obj.getString("location"));
+                  //doScrapping(obj.getString("job"), obj.getString("location"));
+                  jobs.append(obj.getString("job")).append(",");
               }
+              jobs.deleteCharAt(jobs.length()-1);
+              System.out.println("jobs.toString()) = " + jobs.toString());
+              doScrapping(jobs.toString().replace(" ", "+"), "");
           //} else {
               //response.append("meta", Utilitaires.makeMeta("Error", "Bad credential, no data submitted"));
           //}
@@ -94,7 +99,7 @@ public class ScrappingController {
         return back.toString();
     }*/
 
-    public static ArrayList<Job> doScrapping(String job, String location) throws IOException {
+    /*public static ArrayList<Job> doScrapping(String job, String location) throws IOException {
 
         final String urlIndeed = "https://www.indeed.com/jobs?q="+job+"&l="+location;
         final String urlLinkup = "https://www.linkup.com/search/results/"+ job +"-jobs-in-"+ location;
@@ -106,6 +111,7 @@ public class ScrappingController {
             scrappIndeed(urlIndeed);
             scrappLinkup(urlLinkup);
             scrappPoleEmploi(urlPoleEmploi);
+            //scrappLinkedIn(urlLinkedIn);
 
             if(!jobsList.isEmpty()){
                 return jobsList;
@@ -121,6 +127,37 @@ public class ScrappingController {
         }catch (UnknownHostException ex ){
             System.out.println("Impossible de joindre l'hôte : " + ex.getMessage() + ". Vérifiez votre connexion.");
         }catch (org.json.JSONException jsonException){
+            jsonException.printStackTrace();
+        }
+
+        return jobsList;
+    }*/
+
+    public static ArrayList<Job> doScrapping(String job, String location) throws IOException {
+
+        final String urlIndeed = "https://www.indeed.com/jobs?q="+job+"&l="+location;
+        //final String urlLinkup = "https://www.linkup.com/search/results/"+ job +"-jobs-in-"+ location;
+        final String urlPoleEmploi = "https://candidat.pole-emploi.fr/offres/recherche?motsCles="+job+"&offresPartenaires=true&rayon=10&tri=0";
+        //final String urlLinkedIn = "https://www.linkedin.com/jobs/search/?keywords="+ job +"&location="+ location;
+
+        try{
+            //scrappIndeed(urlIndeed);
+            //scrappLinkup(urlLinkup);
+            scrappPoleEmploi(urlPoleEmploi);
+            //scrappLinkedIn(urlLinkedIn);
+
+            /*if(!jobsList.isEmpty()){
+                return jobsList;
+            }else {
+                Iterable<Job> list = jobRepository.findAll();
+                for (Job job1 : list) {
+                    if((job1.getTitle().compareToIgnoreCase(job) >= 0) && ((job1.getLocation().compareToIgnoreCase(location) >= 0) ||
+                            (job1.getDescription().compareToIgnoreCase(location) >= 0))){
+                        jobsList.add(job1);
+                    }
+                }
+            }*/
+        } catch (org.json.JSONException jsonException){
             jsonException.printStackTrace();
         }
 
@@ -201,7 +238,7 @@ public class ScrappingController {
         //Document document3 = null;
         try{
             Document document3 = Jsoup.connect(url.replace(" ", "+")).get();
-
+            System.out.println("url = " + url);
             if(document3 != null){
                 for ( Element element : document3.select("div.zone-resultats ul.result-list.list-unstyled")) {
 
